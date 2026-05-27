@@ -522,3 +522,67 @@
   .informe-page { padding-top: 4mm; }
   .informe-screen-only { display: block; }
 }
+
+/* ── Políticas de Crédito (final page) ──
+ * Compliance matrix appended at the end of the PDF. Rows = investors,
+ * columns = ratios. Cells render a `[value ≤ cap]` pill colored by state.
+ */
+.informe-politicas { display: flex; flex-direction: column; gap: 4mm; }
+.informe-politicas__summary {
+  margin: 0;
+  font-size: 10pt;
+  color: #4b5563;
+  letter-spacing: 0.01em;
+}
+.informe-politicas__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 9.5pt;
+}
+.informe-politicas__th {
+  padding: 2mm 2mm;
+  border-bottom: 1px solid var(--informe-edge, #e5e7eb);
+  font-size: 8.5pt;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #6b7280;
+}
+.informe-politicas__th--label { text-align: left; }
+.informe-politicas__th--num { text-align: center; }
+.informe-politicas__row { break-inside: avoid; page-break-inside: avoid; }
+.informe-politicas__row--noncompliant .informe-politicas__cell--label { color: #9ca3af; }
+.informe-politicas__cell {
+  padding: 2mm 2mm;
+  border-bottom: 1px solid rgba(229, 231, 235, 0.6);
+}
+.informe-politicas__cell--label { text-align: left; font-weight: 500; }
+.informe-politicas__cell--num { text-align: center; font-variant-numeric: tabular-nums; }
+.informe-politicas__pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  padding: 0.6mm 2mm;
+  border-radius: 3mm;
+  border: 1px solid transparent;
+  font-size: 8.5pt;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  white-space: nowrap;
+}
+.informe-politicas__pill-cmp { opacity: 0.6; }
+.informe-politicas__pill--pass {
+  background: rgba(34, 197, 94, 0.10);
+  border-color: rgba(34, 197, 94, 0.30);
+  color: #166534;
+}
+.informe-politicas__pill--fail {
+  background: rgba(220, 38, 38, 0.10);
+  border-color: rgba(220, 38, 38, 0.30);
+  color: #991b1b;
+}
+.informe-politicas__pill--missing-cap,
+.informe-politicas__pill--missing-value {
+  background: #f3f4f6;
+  border-color: #e5e7eb;
+  color: #6b7280;
+}

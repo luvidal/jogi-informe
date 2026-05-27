@@ -4,6 +4,7 @@ import { Callouts } from './callouts'
 import { PerfilMatrix } from './perfilmatrix'
 import { SituacionTables } from './situaciontables'
 import { ResumenSection } from './resumensection'
+import { PoliticasSection } from './politicassection'
 import { Footer, SectionTitle } from './primitives'
 import type { InformeInput } from './types'
 import './informe.css'
@@ -79,6 +80,18 @@ export function Informe({ input }: InformeProps): JSX.Element {
         </SectionTitle>
         <SituacionTables applicants={input.applicants} />
       </section>
+
+      {input.politicasCredito && (
+        <section className='informe-page informe-group informe-group--politicas'>
+          <SectionTitle
+            eyebrow='Políticas de Crédito'
+            subtitle='Topes por inversionista vs. indicadores del cliente'
+          >
+            {input.politicasCredito.title}
+          </SectionTitle>
+          <PoliticasSection block={input.politicasCredito} />
+        </section>
+      )}
 
       <Footer companyName={input.brand.companyName ?? null} />
     </article>

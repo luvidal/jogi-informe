@@ -385,6 +385,55 @@ function ResumenTable({ table }) {
 function ResumenSection({ tables }) {
   return /* @__PURE__ */ jsxRuntime.jsx("div", { className: "informe-resumen-section", children: tables.map((table, i) => /* @__PURE__ */ jsxRuntime.jsx(ResumenTable, { table }, `${table.title}-${i}`)) });
 }
+function fmtCell(v, ratio) {
+  if (v == null) return "\u2014";
+  if (ratio === "edad_plazo") return String(Math.round(v));
+  return `${(v * 100).toFixed(1)}%`;
+}
+var STATE_LABEL = {
+  pass: "Cumple",
+  fail: "No cumple",
+  "missing-cap": "Sin tope",
+  "missing-value": "Sin dato"
+};
+function PoliticasPill({ cell }) {
+  return /* @__PURE__ */ jsxRuntime.jsxs(
+    "span",
+    {
+      className: `informe-politicas__pill informe-politicas__pill--${cell.state}`,
+      "aria-label": STATE_LABEL[cell.state],
+      children: [
+        /* @__PURE__ */ jsxRuntime.jsx("span", { className: "informe-politicas__pill-num", children: fmtCell(cell.clientValue, cell.ratio) }),
+        /* @__PURE__ */ jsxRuntime.jsx("span", { className: "informe-politicas__pill-cmp", children: "\u2264" }),
+        /* @__PURE__ */ jsxRuntime.jsx("span", { className: "informe-politicas__pill-num", children: fmtCell(cell.cap, cell.ratio) })
+      ]
+    }
+  );
+}
+function PoliticasSection({ block }) {
+  const colKeys = block.rows[0]?.cells.map((c) => c.ratio) ?? [];
+  const colLabels = block.rows[0]?.cells.map((c) => c.ratioLabel) ?? [];
+  return /* @__PURE__ */ jsxRuntime.jsxs("div", { className: "informe-politicas", children: [
+    /* @__PURE__ */ jsxRuntime.jsx("p", { className: "informe-politicas__summary", children: block.summary }),
+    block.rows.length === 0 ? null : /* @__PURE__ */ jsxRuntime.jsxs("table", { className: "informe-politicas__table", children: [
+      /* @__PURE__ */ jsxRuntime.jsx("thead", { children: /* @__PURE__ */ jsxRuntime.jsxs("tr", { children: [
+        /* @__PURE__ */ jsxRuntime.jsx("th", { className: "informe-politicas__th informe-politicas__th--label", children: "Inversionista" }),
+        colLabels.map((label, i) => /* @__PURE__ */ jsxRuntime.jsx("th", { className: "informe-politicas__th informe-politicas__th--num", children: label }, `${colKeys[i]}-${i}`))
+      ] }) }),
+      /* @__PURE__ */ jsxRuntime.jsx("tbody", { children: block.rows.map((row, ri) => /* @__PURE__ */ jsxRuntime.jsxs(
+        "tr",
+        {
+          className: `informe-politicas__row informe-politicas__row--${row.status}`,
+          children: [
+            /* @__PURE__ */ jsxRuntime.jsx("td", { className: "informe-politicas__cell informe-politicas__cell--label", children: row.investorName }),
+            row.cells.map((cell, ci) => /* @__PURE__ */ jsxRuntime.jsx("td", { className: "informe-politicas__cell informe-politicas__cell--num", children: /* @__PURE__ */ jsxRuntime.jsx(PoliticasPill, { cell }) }, `${cell.ratio}-${ci}`))
+          ]
+        },
+        `${row.investorName}-${ri}`
+      )) })
+    ] })
+  ] });
+}
 function SectionTitle({
   children,
   eyebrow,
@@ -446,6 +495,17 @@ function Informe({ input }) {
         }
       ),
       /* @__PURE__ */ jsxRuntime.jsx(SituacionTables, { applicants: input.applicants })
+    ] }),
+    input.politicasCredito && /* @__PURE__ */ jsxRuntime.jsxs("section", { className: "informe-page informe-group informe-group--politicas", children: [
+      /* @__PURE__ */ jsxRuntime.jsx(
+        SectionTitle,
+        {
+          eyebrow: "Pol\xEDticas de Cr\xE9dito",
+          subtitle: "Topes por inversionista vs. indicadores del cliente",
+          children: input.politicasCredito.title
+        }
+      ),
+      /* @__PURE__ */ jsxRuntime.jsx(PoliticasSection, { block: input.politicasCredito })
     ] }),
     /* @__PURE__ */ jsxRuntime.jsx(Footer, { companyName: input.brand.companyName ?? null })
   ] });

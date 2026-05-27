@@ -10,6 +10,12 @@ export type {
   InformeCallout,
   InformeResumenRow,
   InformeResumenTable,
+  InformePoliticasBlock,
+  InformePoliticasRow,
+  InformePoliticasCell,
+  PoliticasRatio,
+  PoliticasCellState,
+  PoliticasRowStatus,
   ColumnConfig,
   SituacionRow,
 } from './types'

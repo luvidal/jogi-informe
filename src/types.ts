@@ -59,6 +59,35 @@ export interface InformeResumenTable {
   rows: InformeResumenRow[]
 }
 
+export type PoliticasRatio = 'div_renta' | 'carga_financiera' | 'deuda_precio_venta' | 'edad_plazo'
+export type PoliticasCellState = 'pass' | 'fail' | 'missing-cap' | 'missing-value'
+export type PoliticasRowStatus = 'compliant' | 'incomplete' | 'noncompliant'
+
+export interface InformePoliticasCell {
+  ratio: PoliticasRatio
+  ratioLabel: string
+  /** Client-side computed value (percent ratios stored as decimals, edad+plazo as integer years). */
+  clientValue: number | null
+  /** Investor max-cap — same scale as `clientValue`. */
+  cap: number | null
+  state: PoliticasCellState
+}
+
+export interface InformePoliticasRow {
+  investorName: string
+  status: PoliticasRowStatus
+  cells: InformePoliticasCell[]
+}
+
+export interface InformePoliticasBlock {
+  title: string
+  /** One-line headline (e.g. `2 de 5 inversionistas dispuestos a financiar`)
+   *  or the empty-state CTA when the analyst's company has no configured
+   *  investors. The host decides which copy to emit. */
+  summary: string
+  rows: InformePoliticasRow[]
+}
+
 export interface InformeInput {
   meta: {
     requestLabel: string
@@ -79,4 +108,9 @@ export interface InformeInput {
     callouts: InformeCallout[]
     tables: InformeResumenTable[]
   }
+  /** Políticas de Crédito — investor-vs-client compliance matrix. Rendered at
+   *  the END of the PDF (page-break before). Omitted when the analyst has no
+   *  company; present with `rows: []` when they have a company but no
+   *  configured investors (renderer shows the empty-state CTA). */
+  politicasCredito?: InformePoliticasBlock
 }

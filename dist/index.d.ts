@@ -58,6 +58,31 @@ interface InformeResumenTable {
     headers: string[];
     rows: InformeResumenRow[];
 }
+type PoliticasRatio = 'div_renta' | 'carga_financiera' | 'deuda_precio_venta' | 'edad_plazo';
+type PoliticasCellState = 'pass' | 'fail' | 'missing-cap' | 'missing-value';
+type PoliticasRowStatus = 'compliant' | 'incomplete' | 'noncompliant';
+interface InformePoliticasCell {
+    ratio: PoliticasRatio;
+    ratioLabel: string;
+    /** Client-side computed value (percent ratios stored as decimals, edad+plazo as integer years). */
+    clientValue: number | null;
+    /** Investor max-cap — same scale as `clientValue`. */
+    cap: number | null;
+    state: PoliticasCellState;
+}
+interface InformePoliticasRow {
+    investorName: string;
+    status: PoliticasRowStatus;
+    cells: InformePoliticasCell[];
+}
+interface InformePoliticasBlock {
+    title: string;
+    /** One-line headline (e.g. `2 de 5 inversionistas dispuestos a financiar`)
+     *  or the empty-state CTA when the analyst's company has no configured
+     *  investors. The host decides which copy to emit. */
+    summary: string;
+    rows: InformePoliticasRow[];
+}
 interface InformeInput {
     meta: {
         requestLabel: string;
@@ -81,6 +106,11 @@ interface InformeInput {
         callouts: InformeCallout[];
         tables: InformeResumenTable[];
     };
+    /** Políticas de Crédito — investor-vs-client compliance matrix. Rendered at
+     *  the END of the PDF (page-break before). Omitted when the analyst has no
+     *  company; present with `rows: []` when they have a company but no
+     *  configured investors (renderer shows the empty-state CTA). */
+    politicasCredito?: InformePoliticasBlock;
 }
 
 interface InformeProps {
@@ -99,4 +129,4 @@ interface InformeProps {
  */
 declare function Informe({ input }: InformeProps): JSX.Element;
 
-export { type ColumnConfig, Informe, type InformeApplicant, type InformeCallout, type InformeInput, type InformePerfilField, type InformePerfilSubsection, type InformeProps, type InformeResumenRow, type InformeResumenTable, type SituacionRow };
+export { type ColumnConfig, Informe, type InformeApplicant, type InformeCallout, type InformeInput, type InformePerfilField, type InformePerfilSubsection, type InformePoliticasBlock, type InformePoliticasCell, type InformePoliticasRow, type InformeProps, type InformeResumenRow, type InformeResumenTable, type PoliticasCellState, type PoliticasRatio, type PoliticasRowStatus, type SituacionRow };
